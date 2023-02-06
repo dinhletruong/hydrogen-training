@@ -124,7 +124,16 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu}) {
 
 function DesktopHeader({countryCode, isHome, menu, openCart, title}) {
   const {y} = useWindowScroll();
-
+  const TopMenuHover = event => {
+    let othertopnav = document.querySelectorAll('header nav > .top-menu');
+    othertopnav.forEach(top => {
+      top.classList.remove('active');
+    })
+    event.target.closest('.top-menu').classList.add('active');
+  }
+  const DrodDownOut = event => {
+    event.target.closest('.top-menu').classList.remove('active');
+  }
   const styles = {
     button:
       'relative flex items-center justify-center w-8 h-8 focus:ring-primary/5',
@@ -146,9 +155,22 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title}) {
         <nav className="flex gap-8">
           {/* Top level menu items */}
           {(menu?.items || []).map((item) => (
-            <Link key={item.id} to={item.to} target={item.target}>
-              {item.title}
-            </Link>
+            <div className="top-menu" key={'top-menu--'+item.id}>
+              <Link key={item.id} to={item.to} target={item.target} onMouseEnter={TopMenuHover}>
+                {item.title}
+              </Link>
+              {item?.items.length > 0 && (
+                <button id="dropdownToggleButton" data-dropdown-toggle="dropdownToggle" class="top-menu" type="button"><svg class="w-4 h-4 ml-2" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button>
+              )}
+              {item?.items.length > 0 && (
+                  <div className="drop-down" key={'drop-down--'+item.id} onMouseLeave={DrodDownOut}>   
+                  <>
+                    {(item?.items || []).map((submenu) => (
+                      <Link key={submenu.id} to={submenu.url} target={submenu.target}>{submenu.title}</Link>
+                    ))}      
+                  </> </div>
+              )}
+              </div>
           ))}
         </nav>
       </div>

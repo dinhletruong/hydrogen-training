@@ -9,3 +9,5 @@ export {CountrySelector} from './CountrySelector.client';
 export {CustomFont} from './CustomFont.client';
 export {HeaderFallback} from './HeaderFallback';
 export {EventsListener} from './EventsListener.client';
+export {LangSwitcher} from './LangSwitcher.client';
+export {Lang} from './Lang.client';
