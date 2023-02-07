@@ -3,11 +3,11 @@ import {Image, Link} from '@shopify/hydrogen';
 export function ArticleCard({blogHandle, article, loading}) {
   return (
     <li key={article.id}>
-      <Link to={`/${blogHandle}/${article.handle}`}>
+      <Link to={`/${'blogs/' + blogHandle}/${article.handle}`}>
         {article.image && (
           <div className="card-image aspect-[3/2]">
             <Image
-              alt={article.image.altText || article.title}
+              alt={article.image.altText ||  article.title}
               className="object-cover w-full"
               data={article.image}
               height={400}

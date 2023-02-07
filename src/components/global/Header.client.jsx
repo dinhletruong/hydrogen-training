@@ -166,7 +166,7 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title}) {
                   <div className="drop-down" key={'drop-down--'+item.id} onMouseLeave={DrodDownOut}>   
                   <>
                     {(item?.items || []).map((submenu) => (
-                      <Link key={submenu.id} to={submenu.url} target={submenu.target}>{submenu.title}</Link>
+                      <Link key={submenu.id} to={submenu.type === "BLOG" ? `/blogs` + submenu.to : submenu.to} target={submenu.target}>{submenu.title}</Link>
                     ))}      
                   </> </div>
               )}
