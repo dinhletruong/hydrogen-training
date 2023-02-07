@@ -1,6 +1,6 @@
-import {useMemo, useState} from 'react';
+import {useMemo, useState, Suspense} from 'react';
 import {useRenderServerComponents} from '~/lib/utils';
-
+import { fetchSync} from '@shopify/hydrogen';
 import {Button, Text} from '~/components';
 import {getInputStyleClasses} from '../../lib/styleUtils';
 
@@ -194,20 +194,11 @@ export function AccountAddressEdit({address, defaultAddress, close}) {
             />
           </div>
           <div className="mt-3">
-            <input
-              className={getInputStyleClasses()}
-              id="country"
-              name="country"
-              type="text"
-              autoComplete="country-name"
-              placeholder="Country"
-              required
-              aria-label="Country"
-              value={country}
-              onChange={(event) => {
-                setCountry(event.target.value);
-              }}
-            />
+        
+          <Suspense fallback={<div className="p-2">Loading…</div>}>
+                    {/* @ts-expect-error @headlessui/react incompatibility with node16 resolution */}
+                    <NewCountries/>
+          </Suspense>
           </div>
           <div className="mt-3">
             <input
@@ -314,4 +305,38 @@ export async function callUpdateAddressApi({
       error: 'Error saving address. Please try again.',
     };
   }
+}
+
+export function NewCountries() {
+  const response = fetchSync('/api/countries');
+  let countries;
+
+  if (response.ok) {
+    countries = response.json();
+  } else {
+    console.error(
+      `Unable to load available countries ${response.url} returned a ${response.status}`,
+    );
+  }
+  
+  const body =
+      <select name="country" class="w-full" onChange={(event) => event?.target.value}>
+        {countries.map((country, index) => {
+         
+          return (
+            <option key={index} value={country.isoCode}>
+              {country.name}
+            </option>
+          );
+        })}
+      </select>
+
+  return countries ? body : (
+    <div className="flex justify-center">
+      <div className="mt-4 text-center">
+        <div>Unable to load available countries.</div>
+        <div>Please try again.</div>
+      </div>
+    </div>
+  );
 }
